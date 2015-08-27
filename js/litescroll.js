@@ -23,20 +23,21 @@ function LiteScroll(element, options)
 
     this.element = element;
     this.elementRect = element.getBoundingClientRect();
-    this.contentRect = element.firstElementChild.getBoundingClientRect();
+    this.contentRect = element.children[0].getBoundingClientRect();
 
     this.scrollEvent = null;
 
     this.x = 0;
     this.y = 0;
 
-    this.startVel = { x: 0, y: 0 };
-    this.moveVec = { x: 0, y: 0 };
+    this.startVec = { x: 0, y: 0 };
     this.prevVec = { x: 0, y: 0 };
 
     this.options = {
         scrollX: false,
-        scrollY: true
+        scrollY: true,
+        snap: false,
+        snapSpeed: '300ms'
     };
 
     for (var key in options)
@@ -57,10 +58,21 @@ LiteScroll.prototype.scrollEnd = function(e) { }
 /**
  * PUBLIC METHODS
  */
-LiteScroll.prototype.calcRelativePos = function(e)
+LiteScroll.prototype.calcRelativePos = function(x, y)
 {
-    return { x: e.clientX - this.elementRect.left, 
-             y: e.clientY - this.elementRect.top };
+    return { x: x - this.elementRect.left, 
+             y: y - this.elementRect.top };
+}
+
+LiteScroll.prototype.clacPointDistance = function(point1, point2)
+{
+    console.log(point1);
+    console.log(point2);
+
+    var distX = point2.x - point1.x;
+    var distY = point2.y - point1.y;
+
+    return Math.sqrt((distX * distX) + (distY * distY));
 }
 
 LiteScroll.prototype.bindEvents = function()
@@ -75,7 +87,7 @@ LiteScroll.prototype._scrollStart = function(e)
 
     if (!this.scrollEvent)
     {
-        this.startVec = this.calcRelativePos(e);
+        this.startVec = this.calcRelativePos(e.clientX, e.clientY);
         this.scrollEvent = this._scroll.bind(this);
         this.element.addEventListener(('ontouchmove' in window) ? 'touchmove' : 'mousemove', this.scrollEvent, false);
 
@@ -86,7 +98,7 @@ LiteScroll.prototype._scrollStart = function(e)
 
 LiteScroll.prototype._scroll = function(e)
 {
-    var pos = this.calcRelativePos(e);
+    var pos = this.calcRelativePos(e.clientX, e.clientY);
     
     if (this.options.scrollX)
     {
@@ -95,15 +107,9 @@ LiteScroll.prototype._scroll = function(e)
         var newX = this.prevVec.x + moveX;
 
         if (newX > 0 || newX < -(contentWidth))
-        {
             this.x = newX <= 0 ? -(contentWidth) : 0;
-            this.moveVec.x = moveX - (newX - this.x);
-        }
         else
-        {
             this.x = newX;
-            this.moveVec.x = moveX;
-        }
     }
 
     if (this.options.scrollY)
@@ -113,17 +119,12 @@ LiteScroll.prototype._scroll = function(e)
         var newY = this.prevVec.y + moveY;
 
         if (newY > 0 || newY < -(contentHeight))
-        {
             this.y = newY <= 0 ? -(contentHeight) : 0;
-            this.moveVec.y = moveY - (newY - this.y);
-        }
         else
-        {
             this.y = newY;
-            this.moveVec.y = moveY;
-        }
     }
 
+    this.element.firstElementChild.style.transition = 'transform 0ms';
     this.element.firstElementChild.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px) translateZ(0px)';
 
     // Psuedo methods for end users to override
@@ -132,8 +133,38 @@ LiteScroll.prototype._scroll = function(e)
 
 LiteScroll.prototype._scrollEnd = function(e)
 {
-    this.prevVec.x += this.moveVec.x;
-    this.prevVec.y += this.moveVec.y;
+    if (this.options.snap)
+    {
+        var closest = null;
+        var closestVec = { x: 0, y: 0 };
+
+        for (var i = 0, len = this.element.children[0].children.length; i < len; i++)
+        {
+            var pos = this.calcRelativePos(-(this.element.children[0].children[i].offsetLeft), -(this.element.children[0].children[i].offsetTop));
+            var distance = this.clacPointDistance(this, pos);
+
+            if (!i)
+            {
+                closest = distance;
+                closestVec = pos;
+            }
+            else if (distance < closest)
+            {
+                closest = distance;
+                closestVec = pos;
+            }
+        } 
+
+        this.x = closestVec.x;
+        this.y = closestVec.y;
+
+        this.element.firstElementChild.style.transition = 'transform ' + this.options.snapSpeed;
+        this.element.firstElementChild.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px) translateZ(0px)';
+    }
+
+    // Keep track of where we just moved to
+    this.prevVec.x = this.x;
+    this.prevVec.y = this.y;
 
     this.element.removeEventListener(('ontouchmove' in window) ? 'touchmove' : 'mousemove', this.scrollEvent, false);
     this.scrollEvent = null;
