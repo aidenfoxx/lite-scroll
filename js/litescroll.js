@@ -22,6 +22,7 @@ function LiteScroll(element, options)
     }
 
     this.element = element;
+    this.content = element.children[0];
     this.elementRect = element.getBoundingClientRect();
     this.contentRect = element.children[0].getBoundingClientRect();
 
@@ -66,9 +67,6 @@ LiteScroll.prototype.calcRelativePos = function(x, y)
 
 LiteScroll.prototype.clacPointDistance = function(point1, point2)
 {
-    console.log(point1);
-    console.log(point2);
-
     var distX = point2.x - point1.x;
     var distY = point2.y - point1.y;
 
@@ -124,8 +122,8 @@ LiteScroll.prototype._scroll = function(e)
             this.y = newY;
     }
 
-    this.element.firstElementChild.style.transition = 'transform 0ms';
-    this.element.firstElementChild.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px) translateZ(0px)';
+    this.content.style.transition = 'transform 0ms';
+    this.content.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px) translateZ(0px)';
 
     // Psuedo methods for end users to override
     this.scroll(e);
@@ -138,9 +136,9 @@ LiteScroll.prototype._scrollEnd = function(e)
         var closest = null;
         var closestVec = { x: 0, y: 0 };
 
-        for (var i = 0, len = this.element.children[0].children.length; i < len; i++)
+        for (var i = 0, len = this.content.children.length; i < len; i++)
         {
-            var pos = this.calcRelativePos(-(this.element.children[0].children[i].offsetLeft), -(this.element.children[0].children[i].offsetTop));
+            var pos = this.calcRelativePos(-(this.content.children[i].offsetLeft), -(this.content.children[i].offsetTop));
             var distance = this.clacPointDistance(this, pos);
 
             if (!i)
@@ -158,8 +156,9 @@ LiteScroll.prototype._scrollEnd = function(e)
         this.x = closestVec.x;
         this.y = closestVec.y;
 
-        this.element.firstElementChild.style.transition = 'transform ' + this.options.snapSpeed;
-        this.element.firstElementChild.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px) translateZ(0px)';
+        this.content.style.transitionDuration = this.options.snapSpeed;
+        this.content.style.transitionTimingFunction = 'cubic-bezier(0.1, 0.57, 0.1, 1)';
+        this.content.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px) translateZ(0px)';
     }
 
     // Keep track of where we just moved to
