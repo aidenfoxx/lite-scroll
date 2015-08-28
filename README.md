@@ -22,7 +22,7 @@ The structure of the HTML follows the syntax:
     </div>
 ```
 
-### Options
+## Options
 
 All avalible options are:
 
@@ -36,19 +36,19 @@ var options = {
 };
 ```
 
-#### 'scrollX' and 'scrollY'
+### 'scrollX' and 'scrollY'
 Defined if the element can be scrolled on the X and Y axis.
 
-#### 'snap'
+### 'snap'
 Defines if the scroller will snap to elements inside the content container.
 
-#### 'snapSpeed'
+### 'snapSpeed'
 Defines the length of time the scroller will take to animate snapping.
 
-#### 'dynamicResize'
+### 'dynamicResize'
 Defines if the script will resize the scroller upon the window changing.
 
-### Custom Events
+## Custom Events
 The script has a number of events you can bind functions to or override.
 
 ```javascript
