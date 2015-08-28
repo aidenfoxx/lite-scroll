@@ -23,8 +23,10 @@ function LiteScroll(element, options)
 
     this.element = element;
     this.content = element.children[0];
-    this.elementRect = element.getBoundingClientRect();
-    this.contentRect = element.children[0].getBoundingClientRect();
+    this.elementRect = this.element.getBoundingClientRect();
+    this.contentRect = this.content.getBoundingClientRect();
+
+    this.resizeTimeout = null;
 
     this.scrollEvent = null;
 
@@ -38,7 +40,8 @@ function LiteScroll(element, options)
         scrollX: false,
         scrollY: true,
         snap: false,
-        snapSpeed: '300ms'
+        snapSpeed: '300ms',
+        dynamicResize: true
     };
 
     for (var key in options)
@@ -75,8 +78,22 @@ LiteScroll.prototype.clacPointDistance = function(point1, point2)
 
 LiteScroll.prototype.bindEvents = function()
 {
-    this.element.addEventListener(('ontouchstart' in window) ? 'touchstart' : 'mousedown', this._scrollStart.bind(this), false);
-    window.addEventListener(('ontouchend' in window) ? 'touchend' : 'mouseup', this._scrollEnd.bind(this), false);
+    this.element.addEventListener(('ontouchstart' in window) ? 'touchstart' : 'mousedown', this._scrollStart.bind(this));
+    window.addEventListener(('ontouchend' in window) ? 'touchend' : 'mouseup', this._scrollEnd.bind(this));
+
+    if (this.options.dynamicResize)
+        window.addEventListener('resize', this.resize.bind(this));
+}
+
+LiteScroll.prototype.resize = function()
+{
+    clearTimeout(this.resizeTimeout);
+    this.resizeTimeout = setTimeout(function() {
+        this.elementRect = this.element.getBoundingClientRect();
+        this.contentRect = this.content.getBoundingClientRect();
+        // Trigger a scrollend to do any snapping
+        this._scrollEnd();
+    }.bind(this), 500);
 }
 
 LiteScroll.prototype._scrollStart = function(e)
@@ -87,7 +104,7 @@ LiteScroll.prototype._scrollStart = function(e)
     {
         this.startVec = this.calcRelativePos(e.clientX, e.clientY);
         this.scrollEvent = this._scroll.bind(this);
-        this.element.addEventListener(('ontouchmove' in window) ? 'touchmove' : 'mousemove', this.scrollEvent, false);
+        this.element.addEventListener(('ontouchmove' in window) ? 'touchmove' : 'mousemove', this.scrollEvent);
 
         // Psuedo methods for end users to override
         this.scrollStart(e);
@@ -138,7 +155,13 @@ LiteScroll.prototype._scrollEnd = function(e)
 
         for (var i = 0, len = this.content.children.length; i < len; i++)
         {
-            var pos = this.calcRelativePos(-(this.content.children[i].offsetLeft), -(this.content.children[i].offsetTop));
+            var childRect = this.content.children[i].getBoundingClientRect();
+            var pos = this.calcRelativePos(childRect.left - this.x, childRect.top - this.y);
+
+            // We have to make the pos negative due to how we're translating
+            pos.x = -pos.x;
+            pos.y = -pos.y;
+
             var distance = this.clacPointDistance(this, pos);
 
             if (!i)
@@ -165,7 +188,7 @@ LiteScroll.prototype._scrollEnd = function(e)
     this.prevVec.x = this.x;
     this.prevVec.y = this.y;
 
-    this.element.removeEventListener(('ontouchmove' in window) ? 'touchmove' : 'mousemove', this.scrollEvent, false);
+    this.element.removeEventListener(('ontouchmove' in window) ? 'touchmove' : 'mousemove', this.scrollEvent);
     this.scrollEvent = null;
 
     // Psuedo methods for end users to override
