@@ -33,8 +33,8 @@ function LiteScroll(element, options)
     this.x = 0;
     this.y = 0;
 
-    this.startVec = { x: 0, y: 0 };
-    this.prevVec = { x: 0, y: 0 };
+    this.scrollStartVec = { x: 0, y: 0 };
+    this.prevScrollVec = { x: 0, y: 0 };
 
     this.options = {
         scrollX: false,
@@ -102,7 +102,7 @@ LiteScroll.prototype._scrollStart = function(e)
 
     if (!this.scrollEvent)
     {
-        this.startVec = this.calcRelativePos(e.clientX, e.clientY);
+        this.scrollStartVec = this.calcRelativePos(e.clientX, e.clientY);
         this.scrollEvent = this._scroll.bind(this);
         this.element.addEventListener(('ontouchmove' in window) ? 'touchmove' : 'mousemove', this.scrollEvent);
 
@@ -118,8 +118,8 @@ LiteScroll.prototype._scroll = function(e)
     if (this.options.scrollX)
     {
         var contentWidth = this.contentRect.width - this.elementRect.width;
-        var moveX = pos.x - this.startVec.x;
-        var newX = this.prevVec.x + moveX;
+        var moveX = pos.x - this.scrollStartVec.x;
+        var newX = this.prevScrollVec.x + moveX;
 
         if (newX > 0 || newX < -(contentWidth))
             this.x = newX <= 0 ? -(contentWidth) : 0;
@@ -130,8 +130,8 @@ LiteScroll.prototype._scroll = function(e)
     if (this.options.scrollY)
     {
         var contentHeight = this.contentRect.height - this.elementRect.height;
-        var moveY = pos.y - this.startVec.y;
-        var newY = this.prevVec.y + moveY;
+        var moveY = pos.y - this.scrollStartVec.y;
+        var newY = this.prevScrollVec.y + moveY;
 
         if (newY > 0 || newY < -(contentHeight))
             this.y = newY <= 0 ? -(contentHeight) : 0;
@@ -185,8 +185,8 @@ LiteScroll.prototype._scrollEnd = function(e)
     }
 
     // Keep track of where we just moved to
-    this.prevVec.x = this.x;
-    this.prevVec.y = this.y;
+    this.prevScrollVec.x = this.x;
+    this.prevScrollVec.y = this.y;
 
     this.element.removeEventListener(('ontouchmove' in window) ? 'touchmove' : 'mousemove', this.scrollEvent);
     this.scrollEvent = null;
