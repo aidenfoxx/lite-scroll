@@ -3,30 +3,81 @@
 <head>
 	<title>Lite Scroll</title>
 	<style>
-		body { margin: 0; padding: 0; }
+		body { margin: 0; padding: 0; background-color: #333333; }
+		body * { box-sizing: border-box; }
 
-		#scroll { width: 100%; height: 600px; overflow: hidden; box-shadow: 0 2px 0 #999999; }
-		#scroll .content { width: 400%; }
-		#scroll .content .page { width: 25%; height: 600px; float: left; }
-		#scroll .content .page:nth-child(odd) { background-color: #f0f0f0; }
+		#scroll { width: 100%; height: 100%; overflow: hidden; }
+		#scroll .content { width: 300%; height: 200%; }
+		#scroll .content .page { 
+			width: 33.3333333%; 
+			height: 50%;
+			float: left;
+			padding: 15px;
+			font-family: sans-serif;
+			color: #333333;
+			position: relative;
+			z-index: 10;
+		}
+		#scroll .content .page:nth-child(odd) { background-color: #eeeeee; }
 		#scroll .content .page:nth-child(even) { background-color: #dddddd; }
+
+		#mobile {
+			margin: 50px auto;
+			height: 600px;
+			width: 320px;
+			border: 3px solid #ffffff;
+			border-radius: 30px;
+			padding: 10px;
+			background-color: #111111;
+			box-shadow: 0 0 50px #666666;
+		}
+		#mobile .speaker {
+			width: 60px;
+			margin: 20px auto 25px;
+			border: 3px solid #ffffff;
+			padding: 2px;
+			border-radius: 10px;
+		}
+		#mobile .screen {
+			width: 100%;
+			height: 450px;
+			border: 3px solid #ffffff;
+			border-radius: 5px;
+			background-color: #ffffff;
+			overflow: hidden;
+		}
+		#mobile .home {
+			width: 50px;
+			height: 50px;
+			margin: 15px auto;
+			border: 3px solid #ffffff;
+			border-radius: 30px;
+		}
 	</style>
 	<script src="./js/litescroll.js"></script>
 	<script>
 		function load()
 		{
-			var scroll = new LiteScroll(document.getElementById('scroll'), { scrollX: true, scrollY: false, snap: true });
+			var scroll = new LiteScroll(document.getElementById('scroll'), { scrollX: true, scrollY: true, snap: true });
 		}
 	</script>
 </head>
 <body onload="load()">
-	<div id="scroll">
-		<div class="content">
-			<div class="page">Page 1</div>
-			<div class="page">Page 2</div>
-			<div class="page">Page 3</div>
-			<div class="page">Page 4</div>
+	<div id="mobile">
+		<div class="speaker"></div>
+		<div class="screen">
+			<div id="scroll">
+				<div class="content">
+					<div class="page">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mattis dui. Fusce congue sed diam id tempor. Vivamus ac pellentesque purus. Fusce pulvinar, augue non iaculis ultricies, dolor tortor congue risus, eu congue diam erat eu justo. Fusce dignissim nunc imperdiet lectus bibendum suscipit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris vel elementum ex, eget vehicula est. Phasellus ac luctus odio. Pellentesque non risus a velit ultricies viverra. Suspendisse ligula ex, dignissim ac turpis vitae, imperdiet faucibus massa. Nullam id tempus lacus. </div>
+					<div class="page">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mattis dui. Fusce congue sed diam id tempor. Vivamus ac pellentesque purus. Fusce pulvinar, augue non iaculis ultricies, dolor tortor congue risus, eu congue diam erat eu justo. Fusce dignissim nunc imperdiet lectus bibendum suscipit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris vel elementum ex, eget vehicula est. Phasellus ac luctus odio. Pellentesque non risus a velit ultricies viverra. Suspendisse ligula ex, dignissim ac turpis vitae, imperdiet faucibus massa. Nullam id tempus lacus. </div>
+					<div class="page">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mattis dui. Fusce congue sed diam id tempor. Vivamus ac pellentesque purus. Fusce pulvinar, augue non iaculis ultricies, dolor tortor congue risus, eu congue diam erat eu justo. Fusce dignissim nunc imperdiet lectus bibendum suscipit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris vel elementum ex, eget vehicula est. Phasellus ac luctus odio. Pellentesque non risus a velit ultricies viverra. Suspendisse ligula ex, dignissim ac turpis vitae, imperdiet faucibus massa. Nullam id tempus lacus. </div>
+					<div class="page">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mattis dui. Fusce congue sed diam id tempor. Vivamus ac pellentesque purus. Fusce pulvinar, augue non iaculis ultricies, dolor tortor congue risus, eu congue diam erat eu justo. Fusce dignissim nunc imperdiet lectus bibendum suscipit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris vel elementum ex, eget vehicula est. Phasellus ac luctus odio. Pellentesque non risus a velit ultricies viverra. Suspendisse ligula ex, dignissim ac turpis vitae, imperdiet faucibus massa. Nullam id tempus lacus. </div>
+					<div class="page">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mattis dui. Fusce congue sed diam id tempor. Vivamus ac pellentesque purus. Fusce pulvinar, augue non iaculis ultricies, dolor tortor congue risus, eu congue diam erat eu justo. Fusce dignissim nunc imperdiet lectus bibendum suscipit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris vel elementum ex, eget vehicula est. Phasellus ac luctus odio. Pellentesque non risus a velit ultricies viverra. Suspendisse ligula ex, dignissim ac turpis vitae, imperdiet faucibus massa. Nullam id tempus lacus. </div>
+					<div class="page">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mattis dui. Fusce congue sed diam id tempor. Vivamus ac pellentesque purus. Fusce pulvinar, augue non iaculis ultricies, dolor tortor congue risus, eu congue diam erat eu justo. Fusce dignissim nunc imperdiet lectus bibendum suscipit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris vel elementum ex, eget vehicula est. Phasellus ac luctus odio. Pellentesque non risus a velit ultricies viverra. Suspendisse ligula ex, dignissim ac turpis vitae, imperdiet faucibus massa. Nullam id tempus lacus. </div>
+				</div>
+			</div>
 		</div>
+		<div class="home"></div>
 	</div>
 </body>
 </html>

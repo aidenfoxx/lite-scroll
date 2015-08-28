@@ -17,10 +17,8 @@
 function LiteScroll(element, options)
 {
     if (!(this instanceof LiteScroll))
-    {
         return new LiteScroll(element, options);
-    }
-
+    
     this.element = element;
     this.content = element.children[0];
     this.elementRect = this.element.getBoundingClientRect();
@@ -45,9 +43,7 @@ function LiteScroll(element, options)
     };
 
     for (var key in options)
-    {
         this.options[key] = options[key];
-    }
 
     this.bindEvents();
 }
@@ -139,7 +135,7 @@ LiteScroll.prototype._scroll = function(e)
             this.y = newY;
     }
 
-    this.content.style.transition = 'transform 0ms';
+    this.content.style.transitionDuration = '0ms';
     this.content.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px) translateZ(0px)';
 
     // Psuedo methods for end users to override
