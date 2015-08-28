@@ -1,4 +1,4 @@
-# Lite Scroll (Version 0.1.0)
+# Lite Scroll (Version 0.1)
 Lite Scroll is a light alternative to iScroll designed to be super light, easily extendable and highly efficient.
 
 Script example (http://foxx.io/litescroll/).
@@ -15,11 +15,11 @@ var scroll = LiteScroll(element, options);
 The structure of the HTML follows the syntax:
 
 ```html
-    <div id="scroll">
-        <div class="content">
-            Content
-        </div>
+<div id="scroll">
+    <div class="content">
+        Content
     </div>
+</div>
 ```
 
 ## Options
