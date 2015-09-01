@@ -60,23 +60,25 @@ LiteScroll.prototype.scrollEnd = function(e) { }
  */
 LiteScroll.prototype.calcRelativePos = function(x, y)
 {
-    return { x: x - this.elementRect.left, 
-             y: y - this.elementRect.top };
+    return { x: x - this.elementRect.left, y: y - this.elementRect.top };
 }
 
 LiteScroll.prototype.clacPointDistance = function(point1, point2)
 {
     var distX = point2.x - point1.x;
     var distY = point2.y - point1.y;
-
     return Math.sqrt((distX * distX) + (distY * distY));
 }
 
 LiteScroll.prototype.bindEvents = function()
 {
-    this.element.addEventListener(('ontouchstart' in window) ? 'touchstart' : 'mousedown', this._scrollStart.bind(this));
-    window.addEventListener(('ontouchend' in window) ? 'touchend' : 'mouseup', this._scrollEnd.bind(this));
+    this.element.addEventListener('mousedown', this._scrollStart.bind(this));
+    this.element.addEventListener('touchstart', this._scrollStart.bind(this));
 
+    window.addEventListener('mouseup', this._scrollEnd.bind(this));
+    window.addEventListener('touchend', this._scrollEnd.bind(this));
+    window.addEventListener('touchcancel', this._scrollEnd.bind(this));
+    
     if (this.options.dynamicResize)
         window.addEventListener('resize', this.resize.bind(this));
 }
@@ -95,13 +97,13 @@ LiteScroll.prototype.resize = function()
 LiteScroll.prototype._scrollStart = function(e)
 {
     e.preventDefault();
-
+    
     if (!this.scrollEvent)
     {
-        this.scrollStartVec = this.calcRelativePos(e.clientX, e.clientY);
+        this.scrollStartVec = this.calcRelativePos(e.changedTouches[0].pageX | e.pageX, e.changedTouches[0].pageY | e.pageY);
         this.scrollEvent = this._scroll.bind(this);
-        this.element.addEventListener(('ontouchmove' in window) ? 'touchmove' : 'mousemove', this.scrollEvent);
-
+        this.element.addEventListener('mousemove', this.scrollEvent);
+        this.element.addEventListener('touchmove', this.scrollEvent);
         // Psuedo methods for end users to override
         this.scrollStart(e);
     }
@@ -109,7 +111,9 @@ LiteScroll.prototype._scrollStart = function(e)
 
 LiteScroll.prototype._scroll = function(e)
 {
-    var pos = this.calcRelativePos(e.clientX, e.clientY);
+    e.preventDefault();
+    
+    var pos = this.calcRelativePos(e.changedTouches[0].pageX | e.pageX, e.changedTouches[0].pageY | e.pageY);
     
     if (this.options.scrollX)
     {
@@ -184,7 +188,8 @@ LiteScroll.prototype._scrollEnd = function(e)
     this.prevScrollVec.x = this.x;
     this.prevScrollVec.y = this.y;
 
-    this.element.removeEventListener(('ontouchmove' in window) ? 'touchmove' : 'mousemove', this.scrollEvent);
+    this.element.removeEventListener('mousemove', this.scrollEvent);
+    this.element.removeEventListener('touchmove', this.scrollEvent);
     this.scrollEvent = null;
 
     // Psuedo methods for end users to override
