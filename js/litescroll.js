@@ -22,6 +22,7 @@ function LiteScroll(element, options)
     this.element = element;
     this.content = element.children[0];
 
+    this.lockScroll = null;
     this.resizeTimeout = null;
     this.scrollEvent = null;
 
@@ -36,7 +37,8 @@ function LiteScroll(element, options)
         scrollY: true,
         snap: false,
         snapSpeed: '300ms',
-        dynamicResize: true
+        dynamicResize: true,
+        lockScroll: false
     };
 
     for (var key in options)
@@ -135,10 +137,17 @@ LiteScroll.prototype._scroll = function(e)
     
     var pos = this.calcRelativePos(!e.changedTouches ? e.pageX : e.changedTouches[0].pageX, !e.changedTouches ? e.pageY : e.changedTouches[0].pageY);
     
-    if (this.options.scrollX)
+    var moveX = pos.x - this.scrollStartVec.x;
+    var moveY = pos.y - this.scrollStartVec.y;
+
+    if (this.options.scrollX && this.options.lockScroll && (moveX > 20 || moveX < -20) && moveY < 20 && moveY > -20)
+        this.lockScroll = 'x';
+    if (this.options.scrollY && this.options.lockScroll && (moveY > 20 || moveY < -20) && moveX < 20 && moveX > -20)
+        this.lockScroll = 'y';
+
+    if (this.options.scrollX && this.lockScroll !== 'y')
     {
         var contentWidth = this.contentRect.width - this.elementRect.width;
-        var moveX = pos.x - this.scrollStartVec.x;
         var newX = this.prevScrollVec.x + moveX;
 
         if (newX > 0 || newX < -(contentWidth))
@@ -147,10 +156,9 @@ LiteScroll.prototype._scroll = function(e)
             this.x = newX;
     }
 
-    if (this.options.scrollY)
+    if (this.options.scrollY && this.lockScroll !== 'x')
     {
         var contentHeight = this.contentRect.height - this.elementRect.height;
-        var moveY = pos.y - this.scrollStartVec.y;
         var newY = this.prevScrollVec.y + moveY;
 
         if (newY > 0 || newY < -(contentHeight))

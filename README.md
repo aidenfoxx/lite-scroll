@@ -32,7 +32,8 @@ var options = {
     scrollY: true,
     snap: false,
     snapSpeed: '300ms',
-    dynamicResize: true
+    dynamicResize: true,
+    lockScroll: false
 };
 ```
 
@@ -47,6 +48,9 @@ Defines the length of time the scroller will take to animate snapping.
 
 ### 'dynamicResize'
 Defines if the script will resize the scroller upon the window changing.
+
+### 'lockScroll'
+Defines if the script will lock the scroll axis once the user starts scrolling.
 
 ## Custom Events
 The script has a number of events you can bind functions to or override.
