@@ -97,10 +97,10 @@ LiteScroll.prototype.resize = function()
 LiteScroll.prototype._scrollStart = function(e)
 {
     e.preventDefault();
-    
+
     if (!this.scrollEvent)
     {
-        this.scrollStartVec = this.calcRelativePos(e.changedTouches[0].pageX | e.pageX, e.changedTouches[0].pageY | e.pageY);
+        this.scrollStartVec = this.calcRelativePos(!e.changedTouches ? e.pageX : e.changedTouches[0].pageX, !e.changedTouches ? e.pageY : e.changedTouches[0].pageY);
         this.scrollEvent = this._scroll.bind(this);
         this.element.addEventListener('mousemove', this.scrollEvent);
         this.element.addEventListener('touchmove', this.scrollEvent);
@@ -113,7 +113,7 @@ LiteScroll.prototype._scroll = function(e)
 {
     e.preventDefault();
     
-    var pos = this.calcRelativePos(e.changedTouches[0].pageX | e.pageX, e.changedTouches[0].pageY | e.pageY);
+    var pos = this.calcRelativePos(!e.changedTouches ? e.pageX : e.changedTouches[0].pageX, !e.changedTouches ? e.pageY : e.changedTouches[0].pageY);
     
     if (this.options.scrollX)
     {
