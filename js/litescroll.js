@@ -21,11 +21,8 @@ function LiteScroll(element, options)
     
     this.element = element;
     this.content = element.children[0];
-    this.elementRect = this.element.getBoundingClientRect();
-    this.contentRect = this.content.getBoundingClientRect();
 
     this.resizeTimeout = null;
-
     this.scrollEvent = null;
 
     this.x = 0;
@@ -44,6 +41,12 @@ function LiteScroll(element, options)
 
     for (var key in options)
         this.options[key] = options[key];
+
+    this.elementRect = this.element.getBoundingClientRect();
+    this.contentRect = this.content.getBoundingClientRect();
+
+    if (this.options.snap)
+        this.childRect = this.getChildRect();
 
     this.bindEvents();
 }
@@ -89,9 +92,26 @@ LiteScroll.prototype.resize = function()
     this.resizeTimeout = setTimeout(function() {
         this.elementRect = this.element.getBoundingClientRect();
         this.contentRect = this.content.getBoundingClientRect();
+
+        if (this.options.snap)
+        {
+            // This will return incorrect values if the transform is in effect
+            this.content.style.transitionDuration = '0ms';
+            this.content.style.transform = 'translate(0px, 0px) translateZ(0px)';
+            this.childRect = this.getChildRect();
+        }
+
         // Trigger a scrollend to do any snapping
         this._scrollEnd();
     }.bind(this), 500);
+}
+
+LiteScroll.prototype.getChildRect = function()
+{
+    var children = [];
+    for (var i = 0, len = this.content.children.length; i < len; i++)
+        children.push(this.content.children[i].getBoundingClientRect());
+    return children;
 }
 
 LiteScroll.prototype._scrollStart = function(e)
@@ -153,10 +173,9 @@ LiteScroll.prototype._scrollEnd = function(e)
         var closest = null;
         var closestVec = { x: 0, y: 0 };
 
-        for (var i = 0, len = this.content.children.length; i < len; i++)
+        for (var i = 0, len = this.childRect.length; i < len; i++)
         {
-            var childRect = this.content.children[i].getBoundingClientRect();
-            var pos = this.calcRelativePos(childRect.left - this.x, childRect.top - this.y);
+            var pos = this.calcRelativePos(this.childRect[i].left, this.childRect[i].top);
 
             // We have to make the pos negative due to how we're translating
             pos.x = -pos.x;
