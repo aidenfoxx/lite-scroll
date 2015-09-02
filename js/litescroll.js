@@ -12,7 +12,7 @@
 'use strict';
 
 /**
- * CONSTRUCTOR
+ * @constructor
  */
 function LiteScroll(element, options)
 {
@@ -54,16 +54,10 @@ function LiteScroll(element, options)
     this.bindEvents();
 }
 
-/**
- * VIRTUAL METHODS
- */
-LiteScroll.prototype.scrollStart = function(x, y) { }
-LiteScroll.prototype.scroll = function(x, y) { }
-LiteScroll.prototype.scrollEnd = function(x, y) { }
+LiteScroll.prototype.scrollStart = function(e) { }
+LiteScroll.prototype.scroll = function(e) { }
+LiteScroll.prototype.scrollEnd = function(e) { }
 
-/**
- * PUBLIC METHODS
- */
 LiteScroll.prototype.calcRelativePos = function(x, y)
 {
     return { x: x - this.elementRect.left, y: y - this.elementRect.top };
@@ -228,6 +222,6 @@ LiteScroll.prototype._scrollEnd = function(e)
     this.element.removeEventListener('touchmove', this.dragEvent);
     this.dragEvent = null;
     this.lockScroll = null;
-    
+
     this.scrollEnd(e);
 }
