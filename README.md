@@ -1,4 +1,4 @@
-# Lite Scroll (Version 0.1)
+# Lite Scroll (Version 0.2)
 Lite Scroll is a light alternative to iScroll designed to be super light, easily extendable and highly efficient.
 
 Script example (http://foxx.io/litescroll/).
@@ -33,7 +33,9 @@ var options = {
     snap: false,
     snapSpeed: '300ms',
     dynamicResize: true,
-    lockScroll: false
+    lockScroll: false,
+    momentum: true,
+    momentumSpeed: 4
 };
 ```
 
@@ -51,6 +53,22 @@ Defines if the script will resize the scroller upon the window changing.
 
 ### 'lockScroll'
 Defines if the script will lock the scroll axis once the user starts scrolling.
+
+### 'momentum'
+Defines if scrolling will have momentum. This will be disabled if snapping is enabled.
+
+### 'momentumSpeed'
+This is the factor at which the momentum speed is calculated. It uses the length of time the scroll event took and multiplies it by the 'momentumSpeed'.
+
+## Methods
+The script currently has one useful method avalible.
+
+```javascript
+var scroll = LiteScroll(element, options);
+
+// Will scroll the defined coordinates (px, px, ms, transitionTimingFunction)
+scroll.scrollTo(x, y, speed, easing)
+````
 
 ## Custom Events
 The script has a number of events you can bind functions to or override.
