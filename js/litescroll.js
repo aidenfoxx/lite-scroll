@@ -227,6 +227,7 @@ LiteScroll.prototype._scrollEnd = function(e)
     this.element.removeEventListener('mousemove', this.dragEvent);
     this.element.removeEventListener('touchmove', this.dragEvent);
     this.dragEvent = null;
-
+    this.lockScroll = null;
+    
     this.scrollEnd(e);
 }
