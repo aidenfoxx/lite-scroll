@@ -39,7 +39,7 @@ function LiteScroll(element, options)
         snap: false,
         snapSpeed: 300,
         dynamicResize: true,
-        lockScroll: false,
+        lockScroll: true,
         momentum: true,
         momentumSpeed: 4
     };

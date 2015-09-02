@@ -33,7 +33,7 @@ var options = {
     snap: false,
     snapSpeed: '300ms',
     dynamicResize: true,
-    lockScroll: false,
+    lockScroll: true,
     momentum: true,
     momentumSpeed: 4
 };
