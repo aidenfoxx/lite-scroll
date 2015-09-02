@@ -163,10 +163,13 @@ LiteScroll.prototype._scroll = function(e)
     var moveX = pos.x - this.scrollStartVec.x;
     var moveY = pos.y - this.scrollStartVec.y;
 
-    if (this.options.scrollX && this.options.lockScroll && (moveX > 20 || moveX < -20) && moveY < 20 && moveY > -20)
-        this.lockScroll = 'x';
-    if (this.options.scrollY && this.options.lockScroll && (moveY > 20 || moveY < -20) && moveX < 20 && moveX > -20)
-        this.lockScroll = 'y';
+    if (this.options.lockScroll && !this.lockScroll)
+    {
+        if (this.options.scrollX && (moveX > 20 || moveX < -20) && moveY < 20 && moveY > -20)
+            this.lockScroll = 'x';
+        if (this.options.scrollY && (moveY > 20 || moveY < -20) && moveX < 20 && moveX > -20)
+            this.lockScroll = 'y';   
+    }
 
     var newX = this.options.scrollX && this.lockScroll !== 'y' ? this.prevScrollVec.x + moveX : this.x;
     var newY = this.options.scrollY && this.lockScroll !== 'x' ? this.prevScrollVec.y + moveY : this.y;
