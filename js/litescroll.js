@@ -14,13 +14,13 @@
 /**
  * @constructor
  */
-function LiteScroll(element, options)
+function LiteScroll(container, options)
 {
     if (!(this instanceof LiteScroll))
-        return new LiteScroll(element, options);
+        return new LiteScroll(container, options);
     
-    this.element = element;
-    this.content = element.children[0];
+    this.container = container;
+    this.content = container.children[0];
 
     this.lockScroll = null;
     this.resizeTimeout = null;
@@ -47,7 +47,7 @@ function LiteScroll(element, options)
     for (var key in options)
         this.options[key] = options[key];
 
-    this.elementRect = this.element.getBoundingClientRect();
+    this.containerRect = this.container.getBoundingClientRect();
     this.contentRect = this.content.getBoundingClientRect();
     this.childRect = this.options.snap ? this.getChildRect() : [];
 
@@ -60,7 +60,7 @@ LiteScroll.prototype.scrollEnd = function(e) { }
 
 LiteScroll.prototype.calcRelativePos = function(x, y)
 {
-    return { x: x - this.elementRect.left, y: y - this.elementRect.top };
+    return { x: x - this.containerRect.left, y: y - this.containerRect.top };
 }
 
 LiteScroll.prototype.clacPointDistance = function(point1, point2)
@@ -94,8 +94,8 @@ LiteScroll.prototype.getTouchCoords = function(e)
 
 LiteScroll.prototype.bindEvents = function()
 {
-    this.element.addEventListener('mousedown', this._scrollStart.bind(this));
-    this.element.addEventListener('touchstart', this._scrollStart.bind(this));
+    this.container.addEventListener('mousedown', this._scrollStart.bind(this));
+    this.container.addEventListener('touchstart', this._scrollStart.bind(this));
 
     window.addEventListener('mouseup', this._scrollEnd.bind(this));
     window.addEventListener('touchend', this._scrollEnd.bind(this));
@@ -109,7 +109,7 @@ LiteScroll.prototype.resize = function()
 {
     clearTimeout(this.resizeTimeout);
     this.resizeTimeout = setTimeout(function() {
-        this.elementRect = this.element.getBoundingClientRect();
+        this.containerRect = this.container.getBoundingClientRect();
         this.contentRect = this.content.getBoundingClientRect();
         this.childRect = this.options.snap ? this.getChildRect() : [];
     }.bind(this), 500);
@@ -117,8 +117,8 @@ LiteScroll.prototype.resize = function()
 
 LiteScroll.prototype.scrollTo = function(x, y, speed, easing)
 {
-    var contentWidth = this.contentRect.width - this.elementRect.width;
-    var contentHeight = this.contentRect.height - this.elementRect.height;
+    var contentWidth = this.contentRect.width - this.containerRect.width;
+    var contentHeight = this.contentRect.height - this.containerRect.height;
 
     this.x = x;
     this.y = y;
@@ -143,8 +143,8 @@ LiteScroll.prototype._scrollStart = function(e)
         this.dragStart = Date.now();
         this.scrollStartVec = this.getTouchCoords(e);
         this.dragEvent = this._scroll.bind(this);
-        this.element.addEventListener('mousemove', this.dragEvent);
-        this.element.addEventListener('touchmove', this.dragEvent);
+        this.container.addEventListener('mousemove', this.dragEvent);
+        this.container.addEventListener('touchmove', this.dragEvent);
         this.scrollStart(e);
     }
 }
@@ -174,54 +174,65 @@ LiteScroll.prototype._scroll = function(e)
 
 LiteScroll.prototype._scrollEnd = function(e)
 {
-    if (this.options.snap)
+    if (this.dragEvent)
     {
-        var closest = null;
-        var closestVec = { x: 0, y: 0 };
-
-        for (var i = 0, len = this.childRect.length; i < len; i++)
+        if (this.options.snap)
         {
-            var pos = this.calcRelativePos(this.childRect[i].left, this.childRect[i].top);
+            var closest = null;
+            var closestVec = { x: 0, y: 0 };
 
-            // We have to make the pos negative due to how we're translating
-            pos.x = -pos.x;
-            pos.y = -pos.y;
-
-            var distance = this.clacPointDistance(this, pos);
-
-            if (!i || distance < closest)
+            for (var i = 0, len = this.childRect.length; i < len; i++)
             {
-                closest = distance;
-                closestVec = pos;
+                var pos = this.calcRelativePos(this.childRect[i].left, this.childRect[i].top);
+
+                // We have to make the pos negative due to how we're translating
+                pos.x = -pos.x;
+                pos.y = -pos.y;
+
+                var distance = this.clacPointDistance(this, pos);
+
+                if (!i || distance < closest)
+                {
+                    closest = distance;
+                    closestVec = pos;
+                }
             }
+
+            this.scrollTo(closestVec.x, closestVec.y, this.options.snapSpeed, 'cubic-bezier(0.1, 0.57, 0.1, 1)');
+        }
+        else if (this.options.momentum)
+        {
+
+            var pos = this.getTouchCoords(e);
+            var dragLength = Date.now() - this.dragStart;
+            var animationLength = dragLength * this.options.momentumSpeed;
+
+            if (this.lockScroll !== 'y')
+            {
+                var moveX = pos.x - this.scrollStartVec.x;
+                var velX = moveX / dragLength;
+                var newX = this.prevScrollVec.x + pos.x + (velX * animationLength);
+            }
+
+            if (this.lockScroll !== 'x')
+            {
+                var moveY = pos.y - this.scrollStartVec.y;
+                var velY = moveY / dragLength;
+                var newY = this.prevScrollVec.y + pos.y + (velY * animationLength);
+            }
+
+            this.scrollTo(newX ? newX : this.x, newY ? newY : this.y, animationLength, 'cubic-bezier(0.165, 0.840, 0.440, 1.000)');
         }
 
-        this.scrollTo(closestVec.x, closestVec.y, this.options.snapSpeed, 'cubic-bezier(0.1, 0.57, 0.1, 1)');
+        // Keep track of where we just moved to
+        this.prevScrollVec.x = this.x;
+        this.prevScrollVec.y = this.y;
+
+        this.container.removeEventListener('mousemove', this.dragEvent);
+        this.container.removeEventListener('touchmove', this.dragEvent);
+        this.dragEvent = null;
+        this.lockScroll = null;
+        
+        this.scrollEnd(e);
     }
-    else if (this.options.momentum)
-    {
-        var pos = this.getTouchCoords(e);
-        var dragLength = Date.now() - this.dragStart;
-        var animationLength = dragLength * this.options.momentumSpeed;
-
-        var moveX = pos.x - this.scrollStartVec.x;
-        var moveY = pos.y - this.scrollStartVec.y;
-        var velX = moveX / dragLength;
-        var velY = moveY / dragLength;
-        var newX = this.prevScrollVec.x + pos.x + (velX * animationLength);
-        var newY = this.prevScrollVec.y + pos.y + (velY * animationLength);
-
-        this.scrollTo(newX, newY, animationLength, 'cubic-bezier(0.165, 0.840, 0.440, 1.000)');
-    }
-
-    // Keep track of where we just moved to
-    this.prevScrollVec.x = this.x;
-    this.prevScrollVec.y = this.y;
-
-    this.element.removeEventListener('mousemove', this.dragEvent);
-    this.element.removeEventListener('touchmove', this.dragEvent);
-    this.dragEvent = null;
-    this.lockScroll = null;
-
-    this.scrollEnd(e);
 }
