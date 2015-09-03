@@ -35,7 +35,7 @@ var options = {
     dynamicResize: true,
     lockScroll: true,
     momentum: true,
-    momentumSpeed: .008
+    momentumFalloff: .008
 };
 ```
 
