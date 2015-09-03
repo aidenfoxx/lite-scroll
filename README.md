@@ -35,7 +35,7 @@ var options = {
     dynamicResize: true,
     lockScroll: true,
     momentum: true,
-    momentumSpeed: 4
+    momentumSpeed: .008
 };
 ```
 
@@ -57,8 +57,8 @@ Defines if the script will lock the scroll axis once the user starts scrolling.
 ### 'momentum'
 Defines if scrolling will have momentum. This will be disabled if snapping is enabled.
 
-### 'momentumSpeed'
-This is the factor at which the momentum speed is calculated. It uses the length of time the scroll event took and multiplies it by the 'momentumSpeed'.
+### 'momentumFalloff'
+This is the speed at which the momentum slows based on pixels per milisecond.
 
 ## Methods
 The script currently has one useful method avalible.

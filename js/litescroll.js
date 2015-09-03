@@ -41,7 +41,7 @@ function LiteScroll(container, options)
         dynamicResize: true,
         lockScroll: true,
         momentum: true,
-        momentumSpeed: 4
+        momentumFalloff: .008
     };
 
     for (var key in options)
@@ -61,6 +61,11 @@ LiteScroll.prototype.scrollEnd = function(e) { }
 LiteScroll.prototype.calcRelativePos = function(x, y)
 {
     return { x: x - this.containerRect.left, y: y - this.containerRect.top };
+}
+
+LiteScroll.prototype.calcTouchCoords = function(e)
+{
+    return this.calcRelativePos(!e.changedTouches ? e.pageX : e.changedTouches[0].pageX, !e.changedTouches ? e.pageY : e.changedTouches[0].pageY);
 }
 
 LiteScroll.prototype.clacPointDistance = function(point1, point2)
@@ -85,11 +90,6 @@ LiteScroll.prototype.getChildRect = function()
     this.content.style.transform = transformBackup;
 
     return children;
-}
-
-LiteScroll.prototype.getTouchCoords = function(e)
-{
-    return this.calcRelativePos(!e.changedTouches ? e.pageX : e.changedTouches[0].pageX, !e.changedTouches ? e.pageY : e.changedTouches[0].pageY);
 }
 
 LiteScroll.prototype.bindEvents = function()
@@ -141,7 +141,7 @@ LiteScroll.prototype._scrollStart = function(e)
     if (!this.dragEvent)
     {
         this.dragStart = Date.now();
-        this.scrollStartVec = this.getTouchCoords(e);
+        this.scrollStartVec = this.calcTouchCoords(e);
         this.dragEvent = this._scroll.bind(this);
         this.container.addEventListener('mousemove', this.dragEvent);
         this.container.addEventListener('touchmove', this.dragEvent);
@@ -153,7 +153,7 @@ LiteScroll.prototype._scroll = function(e)
 {
     e.preventDefault();
 
-    var pos = this.getTouchCoords(e);
+    var pos = this.calcTouchCoords(e);
     var moveX = pos.x - this.scrollStartVec.x;
     var moveY = pos.y - this.scrollStartVec.y;
 
@@ -203,23 +203,19 @@ LiteScroll.prototype._scrollEnd = function(e)
         else if (this.options.momentum)
         {
 
-            var pos = this.getTouchCoords(e);
-            var dragLength = Date.now() - this.dragStart;
-            var animationLength = dragLength * this.options.momentumSpeed;
+            var pos = this.calcTouchCoords(e);
+            var dragTime = Date.now() - this.dragStart;
 
-            if (this.lockScroll !== 'y')
-            {
-                var moveX = pos.x - this.scrollStartVec.x;
-                var velX = moveX / dragLength;
-                var newX = this.prevScrollVec.x + pos.x + (velX * animationLength);
-            }
+            // Based on movement since we started dragging
+            var velX = (pos.x - this.scrollStartVec.x) / dragTime;
+            var velY = (pos.y - this.scrollStartVec.y) / dragTime;
 
-            if (this.lockScroll !== 'x')
-            {
-                var moveY = pos.y - this.scrollStartVec.y;
-                var velY = moveY / dragLength;
-                var newY = this.prevScrollVec.y + pos.y + (velY * animationLength);
-            }
+            // Use the highest velocity accounting for scrollLock
+            var animationLength = Math.abs(this.lockScroll === 'x' || Math.abs(velX) > Math.abs(velY) ? velX : velY) / this.options.momentumFalloff;
+            
+            // Includes distance calculation
+            var newX = this.lockScroll !== 'y' ? this.x + (Math.abs(velX) * velX) / (this.options.momentumFalloff * 2) : this.x;
+            var newY = this.lockScroll !== 'x' ? this.y + (Math.abs(velY) * velY) / (this.options.momentumFalloff * 2) : this.y;
 
             this.scrollTo(newX ? newX : this.x, newY ? newY : this.y, animationLength, 'cubic-bezier(0.165, 0.840, 0.440, 1.000)');
         }
