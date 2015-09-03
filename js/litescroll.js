@@ -1,7 +1,7 @@
 /** 
  * Lite Scroll
  * 
- * @version    0.2
+ * @version    0.2.1
  * @author     Aiden Foxx
  * @license    MIT License 
  * @copyright  2015 Aiden Foxx
