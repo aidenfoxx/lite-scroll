@@ -121,8 +121,12 @@ LiteScroll.prototype.scrollTo = function(x, y, speed, easing, callback)
 {
     var clamp = false;
 
+    // Better performance from rounded numbers.
+    x = Math.round(x);
+    y = Math.round(y);
+
     // Check for axis locking.
-    if (this.options.scrollX && this.scrollLock !== 'y')
+    if (this.options.scrollX && this.x !== x && this.scrollLock !== 'y')
     {
         var contentWidth = this.contentRect.width - this.containerRect.width;
         var moveX = this.x - x;
@@ -134,10 +138,10 @@ LiteScroll.prototype.scrollTo = function(x, y, speed, easing, callback)
             clamp = Math.abs(this.x - x) / Math.abs(moveX);
         }
 
-        this.x = Math.round(x);
+        this.x = x;
     }
 
-    if (this.options.scrollY && this.scrollLock !== 'x')
+    if (this.options.scrollY && this.y !== y && this.scrollLock !== 'x')
     {
         var contentHeight = this.contentRect.height - this.containerRect.height;
         var moveY = this.y - y;
@@ -149,7 +153,7 @@ LiteScroll.prototype.scrollTo = function(x, y, speed, easing, callback)
             clamp = !clamp || clamp > clampY ? clampY : clamp;
         }
 
-        this.y = Math.round(y);
+        this.y = y;
     }
 
     if (clamp) speed *= clamp;
