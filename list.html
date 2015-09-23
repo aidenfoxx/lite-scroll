@@ -45,9 +45,11 @@
 	</style>
 	<script src="./js/litescroll.js"></script>
 	<script>
+		var scroll;
+
 		function load()
 		{
-			var scroll = new LiteScroll(document.getElementById('scroll'), { momentumFalloff: .004, snap: true });
+			scroll = new LiteScroll(document.getElementById('scroll'), { momentumFalloff: .004, snap: true });
 		}
 	</script>
 </head>
