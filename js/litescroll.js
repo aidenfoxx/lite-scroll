@@ -145,8 +145,8 @@ LiteScroll.prototype.scrollTo = function(x, y, speed, easing, callback)
         if (y > 0 || y < -contentHeight)
         {
             y = y > 0 ? 0 : -contentHeight;
-            var clampX = Math.abs(this.y - y) / Math.abs(moveY);
-            clamp = !clamp || clamp > clampX ? clampX : clamp;
+            var clampY = Math.abs(this.y - y) / Math.abs(moveY);
+            clamp = !clamp || clamp > clampY ? clampY : clamp;
         }
 
         this.y = Math.round(y);
