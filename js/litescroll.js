@@ -41,7 +41,7 @@ function LiteScroll(container, options)
         snapSpeed: 300,
         dynamicResize: true,
         scrollLock: true,
-        scrollLockStart: 20,
+        scrollLockThreshold: 20,
         momentum: true,
         momentumFalloff: .008
     };
@@ -199,9 +199,9 @@ LiteScroll.prototype._scroll = function(e)
     if (this.options.scrollLock && !this.scrollLock)
     {
         // If it's moved more pixels
-        if (this.options.scrollX && (moveX > this.options.scrollLockStart || moveX < -this.options.scrollLockStart) && moveY < this.options.scrollLockStart && moveY > -this.options.scrollLockStart)
+        if (this.options.scrollX && (moveX > this.options.scrollLockThreshold || moveX < -this.options.scrollLockThreshold) && moveY < this.options.scrollLockThreshold && moveY > -this.options.scrollLockThreshold)
             this.scrollLock = 'x';
-        if (this.options.scrollY && (moveY > this.options.scrollLockStart || moveY < -this.options.scrollLockStart) && moveX < this.options.scrollLockStart && moveX > -this.options.scrollLockStart)
+        if (this.options.scrollY && (moveY > this.options.scrollLockThreshold || moveY < -this.options.scrollLockThreshold) && moveX < this.options.scrollLockThreshold && moveX > -this.options.scrollLockThreshold)
             this.scrollLock = 'y';   
     }
 
