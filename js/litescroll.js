@@ -173,7 +173,6 @@ LiteScroll.prototype.snapTo = function(i, callback)
 LiteScroll.prototype._scrollStart = function(e)
 {
     e.preventDefault();
-    e.stopPropagation();
 
     if (!this.dragEvent)
     {
@@ -190,7 +189,6 @@ LiteScroll.prototype._scrollStart = function(e)
 LiteScroll.prototype._scroll = function(e)
 {
     e.preventDefault();
-    e.stopPropagation();
 
     var pos = this.calcTouchCoords(e);
     var moveX = pos.x - this.dragMouseVec.x;
@@ -260,7 +258,7 @@ LiteScroll.prototype._scrollEnd = function(e)
         }
         else if (callback)
         {
-            callback();
+            callback.bind(this)();
         }
 
         this.container.removeEventListener('mousemove', this.dragEvent);
