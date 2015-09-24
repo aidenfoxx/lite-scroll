@@ -56,7 +56,7 @@ Defines if the script will resize the scroller upon the window changing.
 Defines if the script will lock the scroll axis once the user starts scrolling.
 
 ### 'scrollLockThreshold'
-Defines the amount of pixels that must be scrolled before the scroll direction will be locked.
+Defines the amount of pixels that must be scrolled before the scroll direction is locked.
 
 ### 'momentum'
 Defines if scrolling will have momentum.

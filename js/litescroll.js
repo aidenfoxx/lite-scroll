@@ -238,21 +238,28 @@ LiteScroll.prototype._scrollEnd = function(e)
 {
     if (this.dragEvent)
     {
-        var mousePos = this.calcTouchCoords(e);
-        var dragTime = Date.now() - this.dragStart;
+        if (this.options.momentum)
+        {
+            var mousePos = this.calcTouchCoords(e);
+            var dragTime = Date.now() - this.dragStart;
 
-        // Based on movement since we started dragging
-        var velX = (mousePos.x - this.dragMouseVec.x) / dragTime;
-        var velY = (mousePos.y - this.dragMouseVec.y) / dragTime;
+            // Based on movement since we started dragging
+            var velX = (mousePos.x - this.dragMouseVec.x) / dragTime;
+            var velY = (mousePos.y - this.dragMouseVec.y) / dragTime;
 
-        // Use the highest velocity accounting for scrollLock
-        var animationLength = Math.abs(this.scrollLock === 'x' || Math.abs(velX) > Math.abs(velY) ? velX : velY) / this.options.momentumFalloff;
-        
-        // Calculate final position
-        var newX = this.x + (Math.abs(velX) * velX) / (this.options.momentumFalloff * 2);
-        var newY = this.y + (Math.abs(velY) * velY) / (this.options.momentumFalloff * 2);
+            // Use the highest velocity accounting for scrollLock
+            var animationLength = Math.abs(this.scrollLock === 'x' || Math.abs(velX) > Math.abs(velY) ? velX : velY) / this.options.momentumFalloff;
+            
+            // Calculate final position
+            var newX = this.x + (Math.abs(velX) * velX) / (this.options.momentumFalloff * 2);
+            var newY = this.y + (Math.abs(velY) * velY) / (this.options.momentumFalloff * 2);
 
-        this.scrollTo(newX, newY, animationLength, 'cubic-bezier(0.25, 0.45, 0.45, 0.95)', this.snapToNearest);
+            this.scrollTo(newX, newY, animationLength, 'cubic-bezier(0.25, 0.45, 0.45, 0.95)', this.options.snap ? this.snapToNearest : null);
+        }
+        else if (this.options.snap)
+        {
+            this.snapToNearest();
+        }
 
         this.container.removeEventListener('mousemove', this.dragEvent);
         this.container.removeEventListener('touchmove', this.dragEvent);
