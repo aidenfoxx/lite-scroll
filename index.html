@@ -7,23 +7,11 @@
 		body { margin: 0; padding: 0; background-color: #333333; }
 		body * { box-sizing: border-box; }
 
-		#scroll { z-index: 99; width: 100%; height: 100%; overflow: hidden; }
-		#scroll .content { width: 300%; height: 200%; }
-		#scroll .content .page { 
-			width: 33.3333333%; 
-			height: 50%;
-			float: left;
-			padding: 15px;
-			font-family: sans-serif;
-			color: #333333;
-			position: relative;
-			z-index: 10;
-		}
-		#scroll .content .page:nth-child(odd) { background-color: #eeeeee; }
-		#scroll .content .page:nth-child(even) { background-color: #dddddd; }
+		.clearfix:before, .clearfix:after { content: " "; display: table; }
+		.clearfix:after { clear: both; }
 
 		#mobile {
-			margin: 50px auto;
+			margin: 50px auto 0;
 			height: 600px;
 			width: 320px;
 			border: 3px solid #333333;
@@ -53,32 +41,64 @@
 			border: 3px solid #333333;
 			border-radius: 30px;
 		}
+		#mobile .screen iframe { width: 100%; height: 100%; border: none; }
+
+		#links {
+			margin: 20px auto 50px;
+			width: 320px;
+			border: 3px solid #333333;
+			box-shadow: 0 0 30px #222222;
+			overflow: hidden;
+			border-radius: 10px;
+		}
+		#links a {
+			display: block;
+			float: left;
+			width: 33.33333%;
+			text-align: center;
+			padding: 15px 0;
+			font-family: sans-serif;
+			color: #cccccc;
+			text-decoration: none;
+			text-transform: uppercase;
+			font-weight: bold;
+			font-size: 11px;
+			border-left: 3px solid #333333;
+			box-shadow: inset 0 0 20px #222222;
+		}
+		#links a:first-child { border: none; }
+		#links a:hover { box-shadow: none; background-color: #00A8E8; }
 	</style>
-	<script src="./js/litescroll.js"></script>
 	<script>
 		function load()
 		{
-			var scroll = new LiteScroll(document.getElementById('scroll'), { scrollX: true, scrollY: true, snap: true });
+			var content = document.getElementById('content');
+			var links = document.getElementById('links').children;
+
+			var handleClick = function(e)
+			{
+				e.preventDefault();
+				content.src = this.href;
+			}
+
+			for (var i = 0, len = links.length; i < len; i++)
+				links[i].addEventListener('click', handleClick);
 		}
 	</script>
 </head>
 <body onload="load()">
-	<div id="test" style="color: green;"></div>
 	<div id="mobile">
 		<div class="speaker"></div>
 		<div class="screen">
-			<div id="scroll">
-				<div class="content">
-					<div class="page">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mattis dui. Fusce congue sed diam id tempor. Vivamus ac pellentesque purus. Fusce pulvinar, augue non iaculis ultricies, dolor tortor congue risus, eu congue diam erat eu justo. Fusce dignissim nunc imperdiet lectus bibendum suscipit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris vel elementum ex, eget vehicula est. Phasellus ac luctus odio. Pellentesque non risus a velit ultricies viverra. Suspendisse ligula ex, dignissim ac turpis vitae, imperdiet faucibus massa. Nullam id tempus lacus. </div>
-					<div class="page">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mattis dui. Fusce congue sed diam id tempor. Vivamus ac pellentesque purus. Fusce pulvinar, augue non iaculis ultricies, dolor tortor congue risus, eu congue diam erat eu justo. Fusce dignissim nunc imperdiet lectus bibendum suscipit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris vel elementum ex, eget vehicula est. Phasellus ac luctus odio. Pellentesque non risus a velit ultricies viverra. Suspendisse ligula ex, dignissim ac turpis vitae, imperdiet faucibus massa. Nullam id tempus lacus. </div>
-					<div class="page">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mattis dui. Fusce congue sed diam id tempor. Vivamus ac pellentesque purus. Fusce pulvinar, augue non iaculis ultricies, dolor tortor congue risus, eu congue diam erat eu justo. Fusce dignissim nunc imperdiet lectus bibendum suscipit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris vel elementum ex, eget vehicula est. Phasellus ac luctus odio. Pellentesque non risus a velit ultricies viverra. Suspendisse ligula ex, dignissim ac turpis vitae, imperdiet faucibus massa. Nullam id tempus lacus. </div>
-					<div class="page">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mattis dui. Fusce congue sed diam id tempor. Vivamus ac pellentesque purus. Fusce pulvinar, augue non iaculis ultricies, dolor tortor congue risus, eu congue diam erat eu justo. Fusce dignissim nunc imperdiet lectus bibendum suscipit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris vel elementum ex, eget vehicula est. Phasellus ac luctus odio. Pellentesque non risus a velit ultricies viverra. Suspendisse ligula ex, dignissim ac turpis vitae, imperdiet faucibus massa. Nullam id tempus lacus. </div>
-					<div class="page">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mattis dui. Fusce congue sed diam id tempor. Vivamus ac pellentesque purus. Fusce pulvinar, augue non iaculis ultricies, dolor tortor congue risus, eu congue diam erat eu justo. Fusce dignissim nunc imperdiet lectus bibendum suscipit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris vel elementum ex, eget vehicula est. Phasellus ac luctus odio. Pellentesque non risus a velit ultricies viverra. Suspendisse ligula ex, dignissim ac turpis vitae, imperdiet faucibus massa. Nullam id tempus lacus. </div>
-					<div class="page">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mattis dui. Fusce congue sed diam id tempor. Vivamus ac pellentesque purus. Fusce pulvinar, augue non iaculis ultricies, dolor tortor congue risus, eu congue diam erat eu justo. Fusce dignissim nunc imperdiet lectus bibendum suscipit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris vel elementum ex, eget vehicula est. Phasellus ac luctus odio. Pellentesque non risus a velit ultricies viverra. Suspendisse ligula ex, dignissim ac turpis vitae, imperdiet faucibus massa. Nullam id tempus lacus. </div>
-				</div>
-			</div>
+			<iframe id="content" src="./frames/list.html"></iframe>
 		</div>
 		<div class="home"></div>
+	</div>
+	<div id="links">
+		<a href="./frames/list.html">List</a>
+		<a href="./frames/snap.html">+ Snap</a>
+		<a href="./frames/pages.html">Pages</a>
+		<div class="clearfix"></div>
 	</div>
 </body>
 </html>
