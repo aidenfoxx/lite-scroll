@@ -52,7 +52,7 @@ function LiteScroll(container, options)
     // Everything gets cached
     this.containerRect = this.container.getBoundingClientRect();
     this.contentRect = this.content.getBoundingClientRect();
-    this.childRect = this.options.snap ? this.getChildRect() : [];
+    this.childRect = this.getChildRect();
 
     this.bindEvents();
 }
@@ -114,7 +114,7 @@ LiteScroll.prototype.resize = function()
     this.resizeTimeout = setTimeout(function() {
         this.containerRect = this.container.getBoundingClientRect();
         this.contentRect = this.content.getBoundingClientRect();
-        this.childRect = this.options.snap ? this.getChildRect() : [];
+        this.childRect = this.getChildRect();
     }.bind(this), 500);
 }
 
@@ -171,8 +171,8 @@ LiteScroll.prototype.scrollTo = function(x, y, speed, easing, callback)
 
 LiteScroll.prototype.snapTo = function(i, callback)
 {
-    var snapVec = this.calcRelativePos(this.childRect[i].left, this.childRect[i].top);
-    this.scrollTo(-snapVec.x, -snapVec.y, this.options.snapSpeed, 'cubic-bezier(0.1, 0.55, 0.1, 1)', callback);
+    var snapPos = this.calcRelativePos(this.childRect[i].left, this.childRect[i].top);
+    this.scrollTo(-snapPos.x, -snapPos.y, this.options.snapSpeed, 'cubic-bezier(0.1, 0.55, 0.1, 1)', callback);
 }
 
 LiteScroll.prototype.snapToNearest = function(callback)
