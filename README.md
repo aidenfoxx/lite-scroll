@@ -33,7 +33,8 @@ var options = {
     snap: false,
     snapSpeed: 300,
     dynamicResize: true,
-    lockScroll: true,
+    scrollLock: true,
+    scrollLockThreshold: 20,
     momentum: true,
     momentumFalloff: .008
 };
@@ -51,23 +52,32 @@ Defines the length of time in milliseconds that the scroller will take to animat
 ### 'dynamicResize'
 Defines if the script will resize the scroller upon the window changing.
 
-### 'lockScroll'
+### 'scrollLock'
 Defines if the script will lock the scroll axis once the user starts scrolling.
 
+### 'scrollLockThreshold'
+Defines the ammount of pixels that must be scrolled before the scroll direction will be locked.
+
 ### 'momentum'
-Defines if scrolling will have momentum. This will be disabled if snapping is enabled.
+Defines if scrolling will have momentum.
 
 ### 'momentumFalloff'
-This is the speed at which the momentum slows based on pixels per millisecond.
+Defines the speed at which the momentum slows based on pixels per millisecond.
 
 ## Methods
-The script currently has one useful method avalible.
+The script has multiple avalible methods.
 
 ```javascript
 var scroll = LiteScroll(element, options);
 
-// Will scroll the defined coordinates (px, px, ms, transitionTimingFunction)
-scroll.scrollTo(x, y, speed, easing)
+// Will scroll the defined coordinates (px, px, ms, cssTimingDefinition, function)
+scroll.scrollTo(x, y, speed, easing, callback)
+
+// Will snap to a child element of the scroller based on the dom index (int, function)
+scroll.snapTo(domIndex, callback)
+
+// Will snap to the nearest child element of the scroller
+scroll.snapNearest()
 ````
 
 ## Custom Events
@@ -102,7 +112,7 @@ scroll.scroll = function(e) {
 The plugin has been tested and is working in all major web browsers, and supports IE9 and above.
 
 ## Future Development
-- Add some sort of momentum scrolling.
+- All done for now. I'm open to suggestions.
 
 ## License
 All code is free to use and distribute under MIT License unless otherwise specified.
