@@ -1,7 +1,7 @@
 /** 
  * Lite Scroll
  * 
- * @version    0.3.0
+ * @version    0.3.1
  * @author     Aiden Foxx
  * @license    MIT License 
  * @copyright  2015 Aiden Foxx
@@ -24,15 +24,17 @@ function LiteScroll(container, options)
 
     this.scrollCallback = null;
     this.scrollLock = null;
+    this.scrollEvent = null;
+    this.scrollBegin = null;
+    this.scrollFrame = null;
+
+    this.scrollInitVec = { x: 0, y: 0 };
+    this.scrollInitMouseVec = { x: 0, y: 0 };
+
     this.resizeTimeout = null;
-    this.dragEvent = null;
-    this.dragStart = null;
 
     this.x = 0;
     this.y = 0;
-
-    this.dragMouseVec = { x: 0, y: 0 };
-    this.dragStartVec = { x: 0, y: 0 };
 
     this.options = {
         scrollX: false,
@@ -115,6 +117,7 @@ LiteScroll.prototype.resize = function()
         this.containerRect = this.container.getBoundingClientRect();
         this.contentRect = this.content.getBoundingClientRect();
         this.childRect = this.getChildRect();
+        this.snapToNearest();
     }.bind(this), 500);
 }
 
@@ -201,14 +204,14 @@ LiteScroll.prototype._scrollStart = function(e)
 {
     e.preventDefault();
 
-    if (!this.dragEvent)
+    if (!this.scrollEvent)
     {
-        this.dragStart = Date.now();
-        this.dragMouseVec = this.calcTouchCoords(e);
-        this.dragStartVec = { x: this.x, y: this.y };
-        this.dragEvent = this._scroll.bind(this);
-        this.container.addEventListener('mousemove', this.dragEvent);
-        this.container.addEventListener('touchmove', this.dragEvent);
+        this.scrollBegin = Date.now();
+        this.scrollInitMouseVec = this.calcTouchCoords(e);
+        this.scrollInitVec = { x: this.x, y: this.y };
+        this.scrollEvent = this._scroll.bind(this);
+        this.container.addEventListener('mousemove', this.scrollEvent);
+        this.container.addEventListener('touchmove', this.scrollEvent);
         this.scrollStart(e);
     }
 }
@@ -216,10 +219,15 @@ LiteScroll.prototype._scrollStart = function(e)
 LiteScroll.prototype._scroll = function(e)
 {
     e.preventDefault();
+    window.cancelAnimationFrame(this.scrollFrame);
+    this.scrollFrame = window.requestAnimationFrame(function() { this._scrollFrame(e); }.bind(this));
+}
 
+LiteScroll.prototype._scrollFrame = function(e)
+{
     var mousePos = this.calcTouchCoords(e);
-    var moveX = mousePos.x - this.dragMouseVec.x;
-    var moveY = mousePos.y - this.dragMouseVec.y;
+    var moveX = mousePos.x - this.scrollInitMouseVec.x;
+    var moveY = mousePos.y - this.scrollInitMouseVec.y;
 
     if (this.options.scrollLock && !this.scrollLock)
     {
@@ -230,22 +238,24 @@ LiteScroll.prototype._scroll = function(e)
             this.scrollLock = 'y';   
     }
 
-    this.scrollTo(this.dragStartVec.x + moveX, this.dragStartVec.y + moveY, 0, 'linear');
-    this.scroll(e);
+    this.scrollTo(this.scrollInitVec.x + moveX, this.scrollInitVec.y + moveY, 0, 'linear');
+    this.scroll(e); 
 }
 
 LiteScroll.prototype._scrollEnd = function(e)
 {
-    if (this.dragEvent)
+    if (this.scrollEvent)
     {
+        window.cancelAnimationFrame(this.scrollFrame);
+
         if (this.options.momentum)
         {
             var mousePos = this.calcTouchCoords(e);
-            var dragTime = Date.now() - this.dragStart;
+            var dragTime = Date.now() - this.scrollBegin;
 
             // Based on movement since we started dragging
-            var velX = (mousePos.x - this.dragMouseVec.x) / dragTime;
-            var velY = (mousePos.y - this.dragMouseVec.y) / dragTime;
+            var velX = (mousePos.x - this.scrollInitMouseVec.x) / dragTime;
+            var velY = (mousePos.y - this.scrollInitMouseVec.y) / dragTime;
 
             // Use the highest velocity accounting for scrollLock
             var animationLength = Math.abs(this.scrollLock === 'x' || Math.abs(velX) > Math.abs(velY) ? velX : velY) / this.options.momentumFalloff;
@@ -261,9 +271,9 @@ LiteScroll.prototype._scrollEnd = function(e)
             this.snapToNearest();
         }
 
-        this.container.removeEventListener('mousemove', this.dragEvent);
-        this.container.removeEventListener('touchmove', this.dragEvent);
-        this.dragEvent = null;
+        this.container.removeEventListener('mousemove', this.scrollEvent);
+        this.container.removeEventListener('touchmove', this.scrollEvent);
+        this.scrollEvent = null;
         this.scrollLock = null;
         
         this.scrollEnd(e);

@@ -1,4 +1,4 @@
-# Lite Scroll (Version 0.3.0)
+# Lite Scroll (Version 0.3.1)
 Lite Scroll is a light alternative to iScroll designed to be super light, easily extendable and highly efficient.
 
 Script example (http://foxx.io/litescroll/).
@@ -109,7 +109,7 @@ scroll.scroll = function(e) {
 ```
 
 ## Browser Compatibility
-The plugin has been tested and is working in all major web browsers, and supports IE9 and above.
+The plugin has been tested and is working in all major web browsers, and supports IE10 and above.
 
 ## Future Development
 - All done for now. I'm open to suggestions.
