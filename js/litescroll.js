@@ -87,7 +87,7 @@ LiteScroll.prototype.getChildRect = function()
 
     // This will return incorrect values if the transform is in effect
     this.content.style.transitionDuration = '0ms';
-    this.content.style.transform = 'translate(0px, 0px) translateZ(0px)';
+    this.content.style.transform = 'translate(0px, 0px)';
 
     for (var i = 0, len = this.content.children.length; i < len; i++)
         children.push(this.content.children[i].getBoundingClientRect());

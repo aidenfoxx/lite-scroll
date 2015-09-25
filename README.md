@@ -76,8 +76,8 @@ scroll.scrollTo(x, y, speed, easing, callback)
 // Will snap to a child element of the scroller based on the dom index (int, function)
 scroll.snapTo(domIndex, callback)
 
-// Will snap to the nearest child element of the scroller
-scroll.snapNearest()
+// Will snap to the nearest child element of the scroller (function)
+scroll.snapNearest(callback)
 ````
 
 ## Custom Events
