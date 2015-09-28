@@ -232,9 +232,9 @@ LiteScroll.prototype._scrollFrame = function(e)
     if (this.options.scrollLock && !this.scrollLock)
     {
         // Lock if we move enough pixels in one direction
-        if (this.options.scrollX && (moveX > this.options.scrollLockThreshold || moveX < -this.options.scrollLockThreshold) && moveY < this.options.scrollLockThreshold && moveY > -this.options.scrollLockThreshold)
+        if (this.options.scrollX && Math.abs(moveX) > this.options.scrollLockThreshold)
             this.scrollLock = 'x';
-        if (this.options.scrollY && (moveY > this.options.scrollLockThreshold || moveY < -this.options.scrollLockThreshold) && moveX < this.options.scrollLockThreshold && moveX > -this.options.scrollLockThreshold)
+        if (this.options.scrollY && Math.abs(moveY) > this.options.scrollLockThreshold)
             this.scrollLock = 'y';   
     }
 
