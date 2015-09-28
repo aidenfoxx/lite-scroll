@@ -36,7 +36,7 @@ var options = {
     scrollLock: true,
     scrollLockThreshold: 20,
     momentum: true,
-    momentumFalloff: .008
+    momentumFalloff: .006
 };
 ```
 

@@ -45,7 +45,7 @@ function LiteScroll(container, options)
         scrollLock: true,
         scrollLockThreshold: 20,
         momentum: true,
-        momentumFalloff: .008
+        momentumFalloff: .006
     };
 
     for (var key in options)
@@ -264,7 +264,7 @@ LiteScroll.prototype._scrollEnd = function(e)
             var newX = this.x + (Math.abs(velX) * velX) / (this.options.momentumFalloff * 2);
             var newY = this.y + (Math.abs(velY) * velY) / (this.options.momentumFalloff * 2);
 
-            this.scrollTo(newX, newY, animationLength, 'cubic-bezier(0.25, 0.45, 0.45, 0.95)', this.options.snap ? this.snapToNearest : null);
+            this.scrollTo(newX, newY, animationLength, 'cubic-bezier(0.315, 0.255, 0.000, 1)', this.options.snap ? this.snapToNearest : null);
         }
         else if (this.options.snap)
         {
