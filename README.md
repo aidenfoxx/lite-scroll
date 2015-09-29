@@ -1,4 +1,4 @@
-# Lite Scroll (Version 0.3.1)
+# Lite Scroll (Version 0.3.2)
 Lite Scroll is a light alternative to iScroll designed to be super light, easily extendable and highly efficient.
 
 Script example (http://foxx.io/litescroll/).
@@ -73,11 +73,11 @@ var scroll = LiteScroll(element, options);
 // Will scroll the defined coordinates (px, px, ms, cssTimingDefinition, function)
 scroll.scrollTo(x, y, speed, easing, callback)
 
-// Will snap to a child element of the scroller based on the dom index (int, function)
-scroll.snapTo(domIndex, callback)
+// Will snap to a child element of the scroller based on the dom index (int, ms, cssTimingDefinition, function)
+scroll.snapTo(domIndex, speed, easing, callback)
 
-// Will snap to the nearest child element of the scroller (function)
-scroll.snapToNearest(callback)
+// Will snap to the nearest child element of the scroller (ms, cssTimingDefinition, function)
+scroll.snapToNearest(speed, easing, callback)
 ````
 
 ## Custom Events

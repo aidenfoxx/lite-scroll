@@ -1,7 +1,7 @@
 /** 
  * Lite Scroll
  * 
- * @version    0.3.1
+ * @version    0.3.2
  * @author     Aiden Foxx
  * @license    MIT License 
  * @copyright  2015 Aiden Foxx
@@ -172,13 +172,15 @@ LiteScroll.prototype.scrollTo = function(x, y, speed, easing, callback)
         this.scrollCallback = setTimeout(callback.bind(this), speed);
 }
 
-LiteScroll.prototype.snapTo = function(i, callback)
+LiteScroll.prototype.snapTo = function(i, speed, easing, callback)
 {
+    if (!this.childRect[i])
+        return false;
     var snapPos = this.calcRelativePos(this.childRect[i].left, this.childRect[i].top);
-    this.scrollTo(-snapPos.x, -snapPos.y, this.options.snapSpeed, 'cubic-bezier(0.1, 0.55, 0.1, 1)', callback);
+    this.scrollTo(-snapPos.x, -snapPos.y, speed ? speed : this.options.snapSpeed, easing ? easing : 'cubic-bezier(0.1, 0.55, 0.1, 1)', callback);
 }
 
-LiteScroll.prototype.snapToNearest = function(callback)
+LiteScroll.prototype.snapToNearest = function(speed, easing, callback)
 {
     var nearest = null;
     var nearestIndex = 0;
@@ -197,7 +199,7 @@ LiteScroll.prototype.snapToNearest = function(callback)
         }
     }
 
-    this.snapTo(nearestIndex, callback);   
+    this.snapTo(nearestIndex, speed, easing, callback);   
 }
 
 LiteScroll.prototype._scrollStart = function(e)
