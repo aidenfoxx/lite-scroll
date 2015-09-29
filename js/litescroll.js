@@ -117,7 +117,6 @@ LiteScroll.prototype.resize = function()
         this.containerRect = this.container.getBoundingClientRect();
         this.contentRect = this.content.getBoundingClientRect();
         this.childRect = this.getChildRect();
-        this.snapToNearest();
     }.bind(this), 500);
 }
 
@@ -177,7 +176,7 @@ LiteScroll.prototype.snapTo = function(i, speed, easing, callback)
     if (!this.childRect[i])
         return false;
     var snapPos = this.calcRelativePos(this.childRect[i].left, this.childRect[i].top);
-    this.scrollTo(-snapPos.x, -snapPos.y, speed ? speed : this.options.snapSpeed, easing ? easing : 'cubic-bezier(0.1, 0.55, 0.1, 1)', callback);
+    this.scrollTo(-snapPos.x, -snapPos.y, speed >= 0 ? speed : this.options.snapSpeed, easing ? easing : 'cubic-bezier(0.1, 0.55, 0.1, 1)', callback);
 }
 
 LiteScroll.prototype.snapToNearest = function(speed, easing, callback)
