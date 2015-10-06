@@ -1,7 +1,7 @@
 /** 
  * Lite Scroll
  * 
- * @version    0.3.2
+ * @version    0.3.3
  * @author     Aiden Foxx
  * @license    MIT License 
  * @copyright  2015 Aiden Foxx
@@ -45,7 +45,8 @@ function LiteScroll(container, options)
         scrollLock: true,
         scrollLockThreshold: 20,
         momentum: true,
-        momentumFalloff: .006
+        momentumFalloff: .006,
+        gpuAcceleration: false
     };
 
     for (var key in options)
@@ -78,6 +79,27 @@ LiteScroll.prototype.clacPointDistance = function(point1, point2)
     var distX = point2.x - point1.x;
     var distY = point2.y - point1.y;
     return Math.sqrt((distX * distX) + (distY * distY));
+}
+
+LiteScroll.prototype.calcNearestChild = function()
+{
+    var nearest = null;
+    var nearestIndex = 0;
+
+    for (var i = 0, len = this.childRect.length; i < len; i++)
+    {
+        var pos = this.calcRelativePos(this.childRect[i].left, this.childRect[i].top);
+        pos.x = -pos.x;
+        pos.y = -pos.y;
+        var distance = this.clacPointDistance(this, pos);
+
+        if (!i || distance < nearest)
+        {
+            nearest = distance;
+            nearestIndex = i;
+        }
+    }
+    return nearestIndex;
 }
 
 LiteScroll.prototype.getChildRect = function()
@@ -122,8 +144,6 @@ LiteScroll.prototype.resize = function()
 
 LiteScroll.prototype.scrollTo = function(x, y, speed, easing, callback)
 {
-    var clamp = false;
-
     // Better performance from rounded numbers
     x = Math.round(x);
     y = Math.round(y);
@@ -132,13 +152,12 @@ LiteScroll.prototype.scrollTo = function(x, y, speed, easing, callback)
     if (this.options.scrollX && this.scrollLock !== 'y' && this.x !== x)
     {
         var contentWidth = this.contentRect.width - this.containerRect.width;
-
         // Collision detection
         if (x > 0 || x < -contentWidth)
         {
             var moveX = this.x - x;
             x = x > 0 ? 0 : -contentWidth;
-            clamp = Math.abs(this.x - x) / Math.abs(moveX);
+            var clampX = Math.abs(this.x - x) / Math.abs(moveX);
         }
 
         this.x = x;
@@ -153,17 +172,21 @@ LiteScroll.prototype.scrollTo = function(x, y, speed, easing, callback)
             var moveY = this.y - y;
             y = y > 0 ? 0 : -contentHeight;
             var clampY = Math.abs(this.y - y) / Math.abs(moveY);
-            clamp = !clamp || clamp > clampY ? clampY : clamp;
         }
 
         this.y = y;
     }
 
-    if (clamp) speed *= clamp;
+    if (!clampX && clampY)
+        speed *= clampY;
+    else if (clampX && !clampY)
+        speed *= clampX;
+    else if (clampX && clampY)
+        speed *= clampX < clampY ? clampX : clampY;
 
     this.content.style.transitionDuration = speed + 'ms';
     this.content.style.transitionTimingFunction = easing;
-    this.content.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px) translateZ(0px)';
+    this.content.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)' + (this.gpuAcceleration ? ' translateZ(0px)' : '');
 
     clearTimeout(this.scrollCallback);
 
@@ -181,24 +204,7 @@ LiteScroll.prototype.snapTo = function(i, speed, easing, callback)
 
 LiteScroll.prototype.snapToNearest = function(speed, easing, callback)
 {
-    var nearest = null;
-    var nearestIndex = 0;
-
-    for (var i = 0, len = this.childRect.length; i < len; i++)
-    {
-        var pos = this.calcRelativePos(this.childRect[i].left, this.childRect[i].top);
-        pos.x = -pos.x;
-        pos.y = -pos.y;
-        var distance = this.clacPointDistance(this, pos);
-
-        if (!i || distance < nearest)
-        {
-            nearest = distance;
-            nearestIndex = i;
-        }
-    }
-
-    this.snapTo(nearestIndex, speed, easing, callback);   
+    return this.snapTo(this.calcNearestChild(), speed, easing, callback);   
 }
 
 LiteScroll.prototype._scrollStart = function(e)

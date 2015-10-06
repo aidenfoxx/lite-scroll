@@ -1,4 +1,4 @@
-# Lite Scroll (Version 0.3.2)
+# Lite Scroll (Version 0.3.3)
 Lite Scroll is a light alternative to iScroll designed to be super light, easily extendable and highly efficient.
 
 Script example (http://foxx.io/litescroll/).
@@ -36,7 +36,8 @@ var options = {
     scrollLock: true,
     scrollLockThreshold: 20,
     momentum: true,
-    momentumFalloff: .006
+    momentumFalloff: .006,
+    gpuAcceleration: false
 };
 ```
 
@@ -63,6 +64,9 @@ Defines if scrolling will have momentum.
 
 ### 'momentumFalloff'
 Defines the speed at which the momentum slows based on pixels per millisecond.
+
+### 'gpuAcceleration'
+Defines if the script will try to enable GPU acceleration on transitions.
 
 ## Methods
 The script has multiple avalible methods.
