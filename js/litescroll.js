@@ -187,10 +187,10 @@ LiteScroll.prototype.scrollTo = function(x, y, speed, easing, callback)
     else if (clampX && clampY)
         speed *= clampX < clampY ? clampX : clampY;
 
+    this.content.style.transform = this.content.style.webkitTransform  = 'translate(' + this.x + 'px, ' + this.y + 'px)' + (this.gpuAcceleration ? ' translateZ(0px)' : '');
     this.content.style.transitionDuration = speed + 'ms';
     this.content.style.transitionTimingFunction = easing;
-    this.content.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)' + (this.gpuAcceleration ? ' translateZ(0px)' : '');
-
+    
     clearTimeout(this.scrollCallback);
 
     if (callback)
