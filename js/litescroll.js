@@ -109,12 +109,12 @@ LiteScroll.prototype.getChildRect = function()
 
     // This will return incorrect values if the transform is in effect
     this.content.style.transitionDuration = '0ms';
-    this.content.style.transform = 'translate(0px, 0px)';
+    this.content.style.transform = this.content.style.webkitTransform = 'translate(0px, 0px)';
 
     for (var i = 0, len = this.content.children.length; i < len; i++)
         children.push(this.content.children[i].getBoundingClientRect());
 
-    this.content.style.transform = transformBackup;
+    this.content.style.transform = this.content.style.webkitTransform = transformBackup;
 
     return children;
 }
