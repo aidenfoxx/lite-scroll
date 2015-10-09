@@ -135,11 +135,14 @@ LiteScroll.prototype.bindEvents = function()
 LiteScroll.prototype.resize = function()
 {
     clearTimeout(this.resizeTimeout);
-    this.resizeTimeout = setTimeout(function() {
-        this.containerRect = this.container.getBoundingClientRect();
-        this.contentRect = this.content.getBoundingClientRect();
-        this.childRect = this.getChildRect();
-    }.bind(this), 500);
+    this.resizeTimeout = setTimeout(function() { this.resizeCallback(); }.bind(this), 500);
+}
+
+LiteScroll.prototype.resizeCallback = function()
+{
+    this.containerRect = this.container.getBoundingClientRect();
+    this.contentRect = this.content.getBoundingClientRect();
+    this.childRect = this.getChildRect();
 }
 
 LiteScroll.prototype.scrollTo = function(x, y, speed, easing, callback)
