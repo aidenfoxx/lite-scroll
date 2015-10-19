@@ -52,11 +52,7 @@ function LiteScroll(container, options)
     for (var key in options)
         this.options[key] = options[key];
 
-    // Everything gets cached
-    this.containerRect = this.container.getBoundingClientRect();
-    this.contentRect = this.content.getBoundingClientRect();
-    this.childRect = this.getChildRect();
-
+    this.resizeCallback();
     this.bindEvents();
 }
 
