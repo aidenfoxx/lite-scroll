@@ -33,6 +33,10 @@ function LiteScroll(container, options)
 
     this.resizeTimeout = null;
 
+    this.containerRect = null;
+    this.contentRect = null;
+    this.childRect = null;
+
     this.x = 0;
     this.y = 0;
 
