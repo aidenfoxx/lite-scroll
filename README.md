@@ -1,4 +1,4 @@
-# Lite Scroll (Version 0.3.3)
+# Lite Scroll (Version 0.3.4)
 Lite Scroll is a light alternative to iScroll designed to be super light, easily extendable and highly efficient.
 
 Script example (http://foxx.io/litescroll/).

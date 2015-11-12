@@ -1,7 +1,7 @@
 /** 
  * Lite Scroll
  * 
- * @version    0.3.3
+ * @version    0.3.4
  * @author     Aiden Foxx
  * @license    MIT License 
  * @copyright  2015 Aiden Foxx
@@ -257,15 +257,18 @@ LiteScroll.prototype._scrollEnd = function(e)
     if (this.scrollEvent)
     {
         window.cancelAnimationFrame(this.scrollFrame);
+        
+        var mousePos = this.calcTouchCoords(e);
+        var moveX = mousePos.x - this.scrollInitMouseVec.x;
+        var moveY = mousePos.y - this.scrollInitMouseVec.y;
 
         if (this.options.momentum)
         {
-            var mousePos = this.calcTouchCoords(e);
             var dragTime = Date.now() - this.scrollBegin;
 
             // Based on movement since we started dragging
-            var velX = (mousePos.x - this.scrollInitMouseVec.x) / dragTime;
-            var velY = (mousePos.y - this.scrollInitMouseVec.y) / dragTime;
+            var velX = moveX / dragTime;
+            var velY = moveY / dragTime;
 
             // Use the highest velocity accounting for scrollLock
             var animationLength = Math.abs(this.scrollLock === 'x' || Math.abs(velX) > Math.abs(velY) ? velX : velY) / this.options.momentumFalloff;
