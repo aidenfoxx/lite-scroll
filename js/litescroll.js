@@ -126,11 +126,11 @@ LiteScroll.prototype.bindEvents = function()
     this.container.addEventListener('pointerdown', this._scrollStart.bind(this));
     this.container.addEventListener('MSPointerDown', this._scrollStart.bind(this));
 
-    window.addEventListener('mouseup', this._scrollEnd.bind(this));
-    window.addEventListener('touchend', this._scrollEnd.bind(this));
-    window.addEventListener('touchcancel', this._scrollEnd.bind(this));
-    window.addEventListener('pointerout', this._scrollEnd.bind(this));
-    window.addEventListener('MSPointerOut', this._scrollEnd.bind(this));
+    document.addEventListener('mouseup', this._scrollEnd.bind(this));
+    document.addEventListener('touchend', this._scrollEnd.bind(this));
+    document.addEventListener('touchcancel', this._scrollEnd.bind(this));
+    document.addEventListener('pointerout', this._scrollEnd.bind(this));
+    document.addEventListener('MSPointerOut', this._scrollEnd.bind(this));
     
     if (this.options.dynamicResize)
         window.addEventListener('resize', this.resize.bind(this));
