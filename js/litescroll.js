@@ -123,14 +123,14 @@ LiteScroll.prototype.bindEvents = function()
 {
     this.container.addEventListener('mousedown', this._scrollStart.bind(this));
     this.container.addEventListener('touchstart', this._scrollStart.bind(this));
-    this.container.addEventListener('pointerdown', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this._scrollStart(); }.bind(this));
-    this.container.addEventListener('MSPointerDown', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this._scrollStart(); }.bind(this));
+    this.container.addEventListener('pointerdown', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this._scrollStart(e); }.bind(this));
+    this.container.addEventListener('MSPointerDown', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this._scrollStart(e); }.bind(this));
 
     document.addEventListener('mouseup', this._scrollEnd.bind(this));
     document.addEventListener('touchend', this._scrollEnd.bind(this));
     document.addEventListener('touchcancel', this._scrollEnd.bind(this));
-    document.addEventListener('pointerout', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this._scrollEnd(); }.bind(this));
-    document.addEventListener('MSPointerOut', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this._scrollEnd(); }.bind(this));
+    document.addEventListener('pointerout', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this._scrollEnd(e); }.bind(this));
+    document.addEventListener('MSPointerOut', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this._scrollEnd(e); }.bind(this));
 
     if (this.options.dynamicResize)
         window.addEventListener('resize', this.resize.bind(this));
