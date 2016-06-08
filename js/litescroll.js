@@ -226,6 +226,8 @@ LiteScroll.prototype._scrollStart = function(e)
         this.scrollEvent = this._scroll.bind(this);
         this.container.addEventListener('mousemove', this.scrollEvent);
         this.container.addEventListener('touchmove', this.scrollEvent);
+        this.container.addEventListener('pointermove', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this.scrollEvent(e); });
+        this.container.addEventListener('MSPointerMove', function(e) { alert('Hello'); if (e.pointerType === 'touch' || e.pointerType === 'pen') this.scrollEvent(e); });
         this.scrollStart(e);
     }
 }
