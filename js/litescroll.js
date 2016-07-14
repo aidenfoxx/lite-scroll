@@ -1,7 +1,7 @@
 /** 
  * Lite Scroll
  * 
- * @version    0.3.5
+ * @version    0.3.6
  * @author     Aiden Foxx
  * @license    MIT License 
  * @copyright  2015 Aiden Foxx
@@ -129,8 +129,8 @@ LiteScroll.prototype.bindEvents = function()
     document.addEventListener('mouseup', this._scrollEnd.bind(this));
     document.addEventListener('touchend', this._scrollEnd.bind(this));
     document.addEventListener('touchcancel', this._scrollEnd.bind(this));
-    document.addEventListener('pointerout', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this._scrollEnd(e); }.bind(this));
-    document.addEventListener('MSPointerOut', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this._scrollEnd(e); }.bind(this));
+    document.addEventListener('pointerup', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this._scrollEnd(e); }.bind(this));
+    document.addEventListener('MSPointerUp', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this._scrollEnd(e); }.bind(this));
 
     if (this.options.dynamicResize)
         window.addEventListener('resize', this.resize.bind(this));
@@ -226,8 +226,8 @@ LiteScroll.prototype._scrollStart = function(e)
         this.scrollEvent = this._scroll.bind(this);
         this.container.addEventListener('mousemove', this.scrollEvent);
         this.container.addEventListener('touchmove', this.scrollEvent);
-        this.container.addEventListener('pointermove', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this.scrollEvent(e); });
-        this.container.addEventListener('MSPointerMove', function(e) { alert('Hello'); if (e.pointerType === 'touch' || e.pointerType === 'pen') this.scrollEvent(e); });
+        this.container.addEventListener('pointermove', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this.scrollEvent(e); }.bind(this));
+        this.container.addEventListener('MSPointerMove', function(e) { if (e.pointerType === 'touch' || e.pointerType === 'pen') this.scrollEvent(e); }.bind(this));
         this.scrollStart(e);
     }
 }
